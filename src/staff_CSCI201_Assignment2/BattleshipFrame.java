@@ -10,6 +10,8 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 import javax.imageio.ImageIO;
@@ -54,9 +56,11 @@ public class BattleshipFrame extends JFrame{
 	private BattleTimer bTimer;
 	private GameManager gameManager;
 	private Thread managerThread;
+	private String file;
 	
-	public BattleshipFrame() {
+	public BattleshipFrame(String file) {
 		super("Battleship");
+		this.file = file;
 		JPanel mainPanel = new JPanel(new BorderLayout());
 		mainPanel.setBackground(Color.WHITE);
 		
@@ -393,6 +397,12 @@ public class BattleshipFrame extends JFrame{
 			        if (returnVal == JFileChooser.APPROVE_OPTION) {
 			        	boolean wasNull = (selectedFile == null);
 			        	selectedFile = fileChooser.getSelectedFile();
+			        	try {
+							URL url = new URL("http://www-scf.usc.edu/~csci201/assignments/" + file + ".battle");
+						} catch (MalformedURLException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 			        	if(toPopulateWithFile.loadMap(selectedFile)){
 			        		fileLabel.setText(selectedFile.getName().split("\\.")[0]);
 			        		if(wasNull && selectedFile!=null){

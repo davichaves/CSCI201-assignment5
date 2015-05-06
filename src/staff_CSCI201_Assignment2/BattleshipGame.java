@@ -27,8 +27,8 @@ public class BattleshipGame {
 	
 	private BattleshipFrame bsf;
 	
-	BattleshipGame() {
-		bsf = new BattleshipFrame();
+	BattleshipGame(String file) {
+		bsf = new BattleshipFrame(file);
 		bsf.enterEditMode();
 		Thread t = new Thread(new WaterChanger(bsf));
 		t.start();
@@ -42,6 +42,8 @@ public class BattleshipGame {
 
 class ConnectMenu extends JFrame {
 	private String ip;
+	private JLabel ipLabel;
+	private JCheckBox maps;
 	/**
 	 * 
 	 */
@@ -56,12 +58,12 @@ class ConnectMenu extends JFrame {
 		} catch (IOException ioe) {
 			ip = "Error!";
 		} finally {
-			JLabel serverNameLabel = new JLabel("Your IP: " + ip, SwingConstants.CENTER);
+			ipLabel = new JLabel("Your IP: " + ip, SwingConstants.CENTER);
 			JLabel nameLabel = new JLabel("Name: ", SwingConstants.CENTER);
 			final JTextField nameField = new JTextField("Player1",10);
 			JButton connect = new JButton("Connect");
 			JButton refresh = new JButton("Refresh");
-			JCheckBox maps = new JCheckBox();
+			maps = new JCheckBox();
 			JLabel mapsLabel = new JLabel("201 Maps", SwingConstants.CENTER);
 			final JTextField mapsField = new JTextField("",10);
 			JCheckBox hostGame = new JCheckBox();
@@ -90,7 +92,7 @@ class ConnectMenu extends JFrame {
 			JPanel south = new JPanel();
 			south.setLayout(new BorderLayout());
 			
-			north.add(serverNameLabel, BorderLayout.CENTER);
+			north.add(ipLabel, BorderLayout.CENTER);
 			centerNorth.add(nameLabel, BorderLayout.LINE_START);
 			centerNorth.add(nameField, BorderLayout.LINE_END);
 			centerSouth.add(maps, BorderLayout.LINE_START);
@@ -119,13 +121,24 @@ class ConnectMenu extends JFrame {
 			
 			connect.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-			    
+					if(maps.isSelected()){
+						String file = mapsField.getText();
+						new BattleshipGame(file);
+					}
 				}
 			});
 			
 			refresh.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-			    
+					try {
+						URL toCheckIp = new URL("http://checkip.amazonaws.com");
+						BufferedReader in = new BufferedReader(new InputStreamReader(toCheckIp.openStream()));
+						ip = in.readLine();
+					} catch (IOException ioe) {
+						ip = "Error!";
+					} finally {
+						ipLabel.setText("Your IP: " + ip);
+					}
 				}
 			});
 			setDefaultCloseOperation(EXIT_ON_CLOSE);
